@@ -50,7 +50,26 @@ add_filter( 'views_edit-post', function( $views )
     if( current_user_can( 'manage_options' ) )
         return $views;
 
-    $remove_views = [ 'all','publish','future','sticky','draft','pending','trash' ];
+    $remove_views = [ 'all','publish','future','sticky','draft','pending','trash', 'private' ];
+
+    foreach( (array) $remove_views as $view )
+    {
+        if( isset( $views[$view] ) )
+            unset( $views[$view] );
+    }
+    return $views;
+} );
+
+/**
+ * Remove the 'all', 'publish', 'future', 'sticky', 'draft', 'pending', 'trash' 
+ * views for non-admins
+ */
+add_filter( 'views_edit-product', function( $views )
+{
+    if( current_user_can( 'manage_options' ) )
+        return $views;
+
+    $remove_views = [ 'all','publish','future','sticky','draft','pending','trash', 'archived' ];
 
     foreach( (array) $remove_views as $view )
     {
