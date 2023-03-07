@@ -1,3 +1,5 @@
+<?php
+
 /*
 Plugin Name: TechDocker Custom Plugin
 Plugin URI: https://github.com/IvanAnikin/techdocker_custom_plugin
@@ -37,3 +39,24 @@ function custom_dashboard_stats_product_count( $views ) {
     return $views; 
 } 
 add_filter( 'views_edit-product', 'custom_dashboard_stats_product_count' );
+
+
+/**
+ * Remove the 'all', 'publish', 'future', 'sticky', 'draft', 'pending', 'trash' 
+ * views for non-admins
+ */
+add_filter( 'views_edit-post', function( $views )
+{
+    if( current_user_can( 'manage_options' ) )
+        return $views;
+
+    $remove_views = [ 'all','publish','future','sticky','draft','pending','trash' ];
+
+    foreach( (array) $remove_views as $view )
+    {
+        if( isset( $views[$view] ) )
+            unset( $views[$view] );
+    }
+    return $views;
+} );
+
